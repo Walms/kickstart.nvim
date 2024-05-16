@@ -239,6 +239,13 @@ require('lazy').setup({
 
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
+  -- Add Ionide-vim for F# support
+  {
+    'ionide/Ionide-vim',
+    config = function()
+      -- You can add Ionide specific configurations here if needed
+    end,
+  },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
