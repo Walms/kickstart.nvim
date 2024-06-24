@@ -239,7 +239,7 @@ require('lazy').setup({
 
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
-  { 'github/copilot.vim, opts = {}},
+  { 'github/copilot.vim', opts = {}},
   -- Add Ionide-vim for F# support
   {
     'ionide/Ionide-vim',
