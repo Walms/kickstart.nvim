@@ -230,19 +230,14 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
---  'ledger/vim-ledger',
-
+  'ledger/vim-ledger',
+  'junegunn/vim-easy-align',
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
   --
   -- Use `opts = {}` to force a plugin to be loaded.
   --
-  { 'github/copilot.vim', 
-    config = function()
-      -- You can add Ionide specific configurations here if needed
-    end,
-  },
   -- Add Ionide-vim for F# support
   {
     'ionide/Ionide-vim',
@@ -289,17 +284,6 @@ require('lazy').setup({
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
       require('which-key').setup()
-
-      -- Document existing key chains
-      require('which-key').add {
-        { '<leader>c', group = '[C]ode' },
-        { '<leader>d', group = '[D]ocument' },
-        { '<leader>r', group = '[R]ename' },
-        { '<leader>s', group = '[S]earch' },
-        { '<leader>w', group = '[W]orkspace' },
-        { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-      }
     end,
   },
 
