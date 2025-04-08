@@ -159,7 +159,32 @@ vim.opt.scrolloff = 10
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+vim.keymap.set('n', '<leader>hc', function()
+  print('Current filetype: ' .. vim.bo.filetype)
 
+  -- Check if cmp is loaded
+  local cmp_ok, cmp = pcall(require, 'cmp')
+  print('CMP loaded: ' .. tostring(cmp_ok))
+
+  -- Check if cmp_hledger is loaded
+  local hledger_ok, _ = pcall(require, 'cmp_hledger')
+  print('CMP Hledger loaded: ' .. tostring(hledger_ok))
+
+  -- Check visible state
+  if cmp_ok then
+    print('CMP visible: ' .. tostring(cmp.visible()))
+    -- Skip the core.is_ready check that's causing errors
+  end
+
+  -- Print current sources for this buffer
+  if cmp_ok then
+    local sources = cmp.get_config().sources
+    print 'Active sources:'
+    for _, source in ipairs(sources or {}) do
+      print(' - ' .. (source.name or 'unknown'))
+    end
+  end
+end, { desc = 'Diagnose hledger completion' })
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -192,6 +217,7 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
+-- Add this alongside your other autocommands
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
@@ -236,7 +262,7 @@ vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-  'anekos/hledger-vim',
+  --  'anekos/hledger-vim',
   'kirasok/cmp-hledger',
   'junegunn/vim-easy-align',
   -- NOTE: Plugins can also be added by using a table,
@@ -708,18 +734,30 @@ require('lazy').setup({
     },
     config = function()
       -- See `:help cmp`
+
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
+      --      require('cmp_hledger').setup {
+      --      main_file = 'hledger.journal',
+      --       strict_accounting = true,
+      --   scan_completions = true,
+      --   }
 
       cmp.setup.filetype('ledger', {
-	  sources = cmp.config.sources {
-	    { name = 'hledger' },
-	    { name = 'nvim_lsp' },
-	    { name = 'path' },
-	  },
+        sources = cmp.config.sources {
+          { name = 'hledger', priority = 100, debug = true },
+          { name = 'nvim_lsp' },
+          { name = 'path' },
+        },
+        -- Explicitly set completion options
+        completion = {
+          completeopt = 'menu,menuone,noinsert',
+          keyword_length = 1, -- Trigger after typing 1 character
+        },
       })
       cmp.setup {
+        preselect = cmp.PreselectMode.None,
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
@@ -748,7 +786,7 @@ require('lazy').setup({
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
-          --['<CR>'] = cmp.mapping.confirm { select = true },
+          ['<CR>'] = cmp.mapping.confirm { select = true },
           --['<Tab>'] = cmp.mapping.select_next_item(),
           --['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
@@ -756,6 +794,7 @@ require('lazy').setup({
           --  Generally you don't need this, because nvim-cmp will display
           --  completions whenever it has completion options available.
           ['<C-Space>'] = cmp.mapping.complete {},
+          ['<C-x>'] = cmp.mapping.complete {},
 
           -- Think of <c-l> as moving to the right of your snippet expansion.
           --  So if you have a snippet that's like:

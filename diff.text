@@ -1,0 +1,52 @@
+diff --git a/init.lua b/init.lua
+index e184bc2..6f75002 100644
+--- a/init.lua
++++ b/init.lua
+@@ -713,11 +713,16 @@ require('lazy').setup({
+       luasnip.config.setup {}
+ 
+       cmp.setup.filetype('ledger', {
+-	  sources = cmp.config.sources {
+-	    { name = 'hledger' },
+-	    { name = 'nvim_lsp' },
+-	    { name = 'path' },
+-	  },
++        sources = cmp.config.sources {
++          { name = 'hledger', priority = 10 },
++          { name = 'nvim_lsp' },
++          { name = 'path' },
++        },
++        -- Explicitly set completion options
++        completion = {
++          completeopt = 'menu,menuone,noinsert',
++          keyword_length = 1, -- Trigger after typing 1 character
++        },
+       })
+       cmp.setup {
+         snippet = {
+@@ -748,7 +753,7 @@ require('lazy').setup({
+ 
+           -- If you prefer more traditional completion keymaps,
+           -- you can uncomment the following lines
+-          --['<CR>'] = cmp.mapping.confirm { select = true },
++          ['<CR>'] = cmp.mapping.confirm { select = true },
+           --['<Tab>'] = cmp.mapping.select_next_item(),
+           --['<S-Tab>'] = cmp.mapping.select_prev_item(),
+ 
+@@ -756,6 +761,7 @@ require('lazy').setup({
+           --  Generally you don't need this, because nvim-cmp will display
+           --  completions whenever it has completion options available.
+           ['<C-Space>'] = cmp.mapping.complete {},
++          ['<C-x>'] = cmp.mapping.complete {},
+ 
+           -- Think of <c-l> as moving to the right of your snippet expansion.
+           --  So if you have a snippet that's like:
+@@ -788,7 +794,7 @@ require('lazy').setup({
+           { name = 'nvim_lsp' },
+           { name = 'luasnip' },
+           { name = 'path' },
+-          { name = 'hledger' },
++          --{ name = 'hledger' },
+         },
+       }
+     end,
